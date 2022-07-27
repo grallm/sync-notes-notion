@@ -5,7 +5,16 @@
   "author": "Malo Grall",
   "license": "MIT",
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^22.0.1",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^13.3.0",
     "@types/google-apps-script": "^1.0.51",
     "rollup": "^2.76.0"
+  },
+  "dependencies": {
+    "@notionhq/client": "^2.1.0"
+  },
+  "scripts": {
+    "build": "rollup --config"
   }
 }
