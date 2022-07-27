@@ -1,0 +1,11 @@
+{
+  "name": "notion-notes-sync",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Malo Grall",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/google-apps-script": "^1.0.51",
+    "rollup": "^2.76.0"
+  }
+}
