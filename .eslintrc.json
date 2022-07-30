@@ -2,13 +2,9 @@
     "env": {
         "googleappsscript/googleappsscript": true
     },
-    "extends": [
-        "standard"
-    ],
+    "extends": ["standard"],
     "parserOptions": {
         "ecmaVersion": "latest"
-    },
-    "rules": {
     },
     "plugins": [
         "googleappsscript"
