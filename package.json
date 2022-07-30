@@ -5,16 +5,16 @@
   "author": "Malo Grall",
   "license": "MIT",
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^22.0.1",
-    "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^13.3.0",
     "@types/google-apps-script": "^1.0.51",
-    "rollup": "^2.76.0"
-  },
-  "dependencies": {
-    "@notionhq/client": "^2.1.0"
+    "eslint": "^8.0.1",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-googleappsscript": "^1.0.4",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-n": "^15.0.0",
+    "eslint-plugin-promise": "^6.0.0"
   },
   "scripts": {
-    "build": "rollup --config"
+    "lint": "eslint **/*.{json,gs}",
+    "lint:fix": "eslint --fix"
   }
 }
