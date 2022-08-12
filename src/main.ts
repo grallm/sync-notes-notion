@@ -1,3 +1,5 @@
+import { NotionDB } from './types'
+
 const notionApiKey = PropertiesService.getScriptProperties().getProperty('NOTION_API_KEY')
 
 // Folder containing all PDF notes
@@ -9,19 +11,18 @@ const notionPageId = 'a1e8d191-a6af-46da-8d3d-c055cfa269aa'
 // eslint-disable-next-line no-unused-vars
 function listFiles () {
   // All notion pages
-  const getPageOptions = {
-    method: 'POST',
+  const getPageOptions: GoogleAppsScript.URL_Fetch.URLFetchRequestOptions = {
+    method: 'post',
     headers: {
       Accept: 'application/json',
       'Notion-Version': '2022-06-28',
       Authorization: `Bearer ${notionApiKey}`
     },
     muteHttpExceptions: true,
-    body: JSON.stringify({})
+    payload: JSON.stringify({})
   }
-  const notionPages = UrlFetchApp.fetch(`https://api.notion.com/v1/databases/${notionPageId}/query`, getPageOptions)
-  Logger.log(notionPages)
-  Logger.log(notionPages.getContentText())
+  const notionPagesDbRes = UrlFetchApp.fetch(`https://api.notion.com/v1/databases/${notionPageId}/query`, getPageOptions)
+  const notionPagesDb = JSON.parse(notionPagesDbRes.getContentText()) as NotionDB
 
   // Drive files
   const files = DriveApp.getFolderById(noteFolderId).getFilesByType('application/pdf')
