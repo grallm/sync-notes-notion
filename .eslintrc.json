@@ -2,12 +2,15 @@
     "env": {
         "googleappsscript/googleappsscript": true
     },
-    "extends": ["standard"],
+    "extends": ["standard", "plugin:@typescript-eslint/recommended"],
+    "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "ecmaVersion": "latest"
     },
     "plugins": [
+        "@typescript-eslint",
         "googleappsscript"
     ],
+    "root": true,
     "ignorePatterns": ["dist/**/*"]
 }
