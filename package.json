@@ -15,12 +15,17 @@
     "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-n": "^15.0.0",
     "eslint-plugin-promise": "^6.0.0",
+    "nodemon": "^2.0.19",
     "typescript": "^4.7.4"
   },
   "scripts": {
     "lint": "eslint **/*.ts",
     "lint:fix": "eslint --fix",
-    "build": "tsc",
-    "start": "tsc -W"
+    "build": "tsc && sed -i '' '/Object.defineProperty(exports/d' dist/main.js",
+    "start": "nodemon --exec \"yarn build\""
+  },
+  "nodemonConfig": {
+    "ignore": ["dist/*"],
+    "watch": ["src/**/*"]
   }
 }

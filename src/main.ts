@@ -35,9 +35,6 @@ function getNotionPage (pageId: string) {
   const notionPageIdRes = UrlFetchApp.fetch(`https://api.notion.com/v1/pages/${pageId}/properties/${idPropId}`, getPageOpt)
   const idRes = JSON.parse(notionPageIdRes.getContentText()) as NotionApiEndpoints.FormulaPropertyItemObjectResponse
 
-  Logger.log(titleRes)
-  Logger.log(idRes)
-
   return {
     uuid: pageId,
     title: (titleRes.results[0] as NotionApiEndpoints.TitlePropertyItemObjectResponse).title.plain_text,
@@ -45,13 +42,38 @@ function getNotionPage (pageId: string) {
   }
 }
 
-// eslint-disable-next-line no-unused-vars
+/**
+ * Append a PDF block to a notion page
+ */
+function addPdfBlock (pageId: string, pdfUrl: string) {
+  const patchBlockOpt: GoogleAppsScript.URL_Fetch.URLFetchRequestOptions = {
+    method: 'patch',
+    headers: notionHttpHeaders,
+    payload: JSON.stringify({
+      children: [{
+        type: 'pdf',
+        pdf: {
+          type: 'external',
+          external: {
+            url: pdfUrl
+          }
+        }
+      }]
+    } as NotionApiEndpoints.AppendBlockChildrenParameters)
+  }
+
+  // Retrieve the page to access ID property value
+  const notionPageRes = UrlFetchApp.fetch(`https://api.notion.com/v1/blocks/${pageId}/children`, patchBlockOpt)
+  const pageRes = JSON.parse(notionPageRes.getContentText()) as NotionApiEndpoints.PageObjectResponse
+  Logger.log(pageRes)
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function listFiles () {
   // All notion pages
   const queryDbOptions: GoogleAppsScript.URL_Fetch.URLFetchRequestOptions = {
     method: 'post',
     headers: notionHttpHeaders,
-    muteHttpExceptions: true,
     payload: JSON.stringify({})
   }
 
@@ -62,19 +84,29 @@ function listFiles () {
     return
   }
 
-  Logger.log(getNotionPage(notionPagesDb.results[0].id))
+  const notionPagesFormatted = notionPagesDb.results.map(page => getNotionPage(page.id))
 
   // Drive files
   const files = DriveApp.getFolderById(noteFolderId).getFilesByType('application/pdf')
 
   while (files.hasNext()) {
     const file = files.next()
+
+    // Check if title contains a notion page ID
+    const fileTitle = file.getName()
+    const filePageLink = notionPagesFormatted.find(page => fileTitle.includes(page.id))
+
+    if (!filePageLink) {
+      return
+    }
+
     file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW)
 
     const fileId = file.getId()
-    const displayUrl = 'https://drive.google.com/uc?export=view&id=' + fileId
+    const displayUrl = 'https://drive.google.com/uc?export=download&id=' + fileId
 
-    Logger.log(file.getSharingAccess())
-    Logger.log(displayUrl)
+    // Add PDF block to notion page
+    Logger.log(`Adding file "${fileTitle}" to notion page "${filePageLink.title}"`)
+    addPdfBlock(filePageLink.uuid, displayUrl)
   }
 }
